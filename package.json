@@ -1,0 +1,29 @@
+{
+  "name": "workshop_tensorflowjs_tag_words",
+  "version": "1.0.0",
+  "description": "create a tagging system for your website",
+  "main": "train_model.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/IRiViI/workshop_tensorflowjs_tag_words.git"
+  },
+  "keywords": [
+    "tensorflowJS",
+    "tagging",
+    "NLP",
+    "nodejs"
+  ],
+  "author": "Rick Vink",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/IRiViI/workshop_tensorflowjs_tag_words/issues"
+  },
+  "homepage": "https://github.com/IRiViI/workshop_tensorflowjs_tag_words#readme",
+  "dependencies": {
+    "@tensorflow/tfjs": "^1.6.0",
+    "@tensorflow/tfjs-node-gpu": "^1.6.0"
+  }
+}

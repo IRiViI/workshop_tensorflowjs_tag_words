@@ -145,7 +145,7 @@ for (let key in sorted_tokens){
 	}
 	// Save tokens
 	var json_tokens = JSON.stringify(sorted_tokens[key]);
-	fs.writeFile(directory + "/tokens.json", json_tokens, 'utf8', function (err) {
+	fs.writeFile(directory + "/X_data.json", json_tokens, 'utf8', function (err) {
 	  if (err) {
 	      console.log("An error occured while writing JSON Object to File.");
 	      return console.log(err);
@@ -153,7 +153,7 @@ for (let key in sorted_tokens){
 	});
 	// Save label indices
 	var json_indices = JSON.stringify(sorted_indices[key]);
-	fs.writeFile(directory + "/indices.json", json_indices, 'utf8', function (err) {
+	fs.writeFile(directory + "/y_data.json", json_indices, 'utf8', function (err) {
 	  if (err) {
 	      console.log("An error occured while writing JSON Object to File.");
 	      return console.log(err);
