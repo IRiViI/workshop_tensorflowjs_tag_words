@@ -2,6 +2,7 @@ const fs = require('fs');
 
 function cleanText(text){
   text = text.toLowerCase();
+  text = text.replace(/\s\s+/g, ' ');
 
   // Replace special symbols by separable symbols
   text = text.replace(/(\r\n|\n|\r)/gm, " ");
@@ -102,9 +103,17 @@ const cats_filepath = "./datasets/reuters/cats.txt";
 const minimal_occurance = 3;
 const save_folder = "./dictionaries";
 
+// const load_folder = "./datasets/imdb/test";
+// const subfolder_names = ["neg"];
+// const cats_filepath = "./datasets/imdb/cats.txt";
+// const minimal_occurance = 1;
+// const save_folder = "./dictionaries";
+
 // 2) Get a list with all the files
 var data = fs.readFileSync(cats_filepath, 'utf8');
 var filename_list = createFilepathList(data, subfolder_names);
+console.log(data)
+console.log(filename_list)
 
 // 3) Count every word of every sample
 var word_counts = {};
@@ -147,7 +156,7 @@ for (let i = 0; i < words_counter_list.length; i++){
 // console.log(inverse_dictonary);
 
 // 8 Save Everything)
-var json_dictonary = JSON.stringify(dictonary);
+var json_dictonary = JSON.stringify(dictonary, null, 4);
 fs.writeFile(save_folder + "/" + "dictionary.json", json_dictonary, 'utf8', function (err) {
   if (err) {
       console.log("An error occured while writing JSON Object to File.");
@@ -155,7 +164,7 @@ fs.writeFile(save_folder + "/" + "dictionary.json", json_dictonary, 'utf8', func
   }
 });
 
-var json_inverse_dictonary = JSON.stringify(inverse_dictonary);
+var json_inverse_dictonary = JSON.stringify(inverse_dictonary, null, 4);
 fs.writeFile(save_folder + "/" + "inverse_dictionary.json", json_inverse_dictonary, 'utf8', function (err) {
   if (err) {
       console.log("An error occured while writing JSON Object to File.");

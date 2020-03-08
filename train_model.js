@@ -6,15 +6,21 @@ const tf = require('@tensorflow/tfjs');
 require('@tensorflow/tfjs-node-gpu');
 
 
+// const test_data_path = "./tokenized/test";
+// const train_data_path = "./tokenized/training";
+// const dictionary_filepath = "./dictionaries/dictionary.json";
+// const model_name = "my_model";
+
+
 const test_data_path = "./tokenized/test";
 const train_data_path = "./tokenized/training";
 const dictionary_filepath = "./dictionaries/dictionary.json";
-const model_name = "my_model"
+const model_name = "my_model";
 
-const sample_length = 400;
-const load_model = true;
+const sample_length = 100;
+const load_model = false;
 const batch_size = 32;
-const epochs = 10;
+const epochs = 2;
 
 function fix_length(data, fix_length){
 	reshaped_data = []
@@ -54,7 +60,7 @@ async function main(){
 	let dictionary_raw = fs.readFileSync(dictionary_filepath);
 	dictionary = JSON.parse(dictionary_raw);
 
-	const number_of_words = Math.max.apply(null, Object.values(dictionary));
+	const number_of_words = Math.max.apply(null, Object.values(dictionary))+1;
 	const number_of_tags = Math.max.apply(null, y_train);
 
 	// 3) fix the length off all the data
@@ -62,6 +68,17 @@ async function main(){
 	X_test = fix_length(X_test, sample_length);
 	X_train = tf.tensor2d(X_train, [X_train.length, sample_length], 'int32');
 	X_test = tf.tensor2d(X_test, [X_test.length, sample_length], 'int32');
+
+	// 13) Count all tokens
+	var class_weight = {};
+	for (let value of y_train){
+		if (value in class_weight){
+			class_weight[value] += 1;
+		} else {
+			class_weight[value] = 1;
+		}
+	}
+	console.log(class_weight)
 
 	// 4) onehot encode y data
 	y_train = tf.oneHot(tf.tensor1d(y_train, 'int32'), number_of_tags);
@@ -75,12 +92,16 @@ async function main(){
 	// 5) Make model
 	if (load_model == false){
 	  var model = tf.sequential();
-	  model.add(tf.layers.embedding({inputDim: number_of_words, outputDim: 16, inputLength:sample_length}));
-		model.add(tf.layers.conv1d({filters: 16, kernelSize: 2, strides: 1}));
-		model.add(tf.layers.globalAveragePooling1d());
+	  model.add(tf.layers.embedding({inputDim: number_of_words, outputDim: 32, inputLength:sample_length}));
+		// model.add(tf.layers.conv1d({filters: 32, kernelSize: 5, strides: 2}));
+		// model.add(tf.layers.conv1d({filters: 32, kernelSize: 5, strides: 2}));
+		// model.add(tf.layers.globalAveragePooling1d());
 		// model.add(tf.layers.globalMaxPooling1d());
+		model.add(tf.layers.flatten());
 		model.add(tf.layers.dense({units: 256, activation: 'relu'}));
-	  model.add(tf.layers.dropout(0.2));
+	  model.add(tf.layers.dropout(0.5));
+		model.add(tf.layers.dense({units: 64, activation: 'relu'}));
+	  model.add(tf.layers.dropout(0.4));
 		model.add(tf.layers.dense({units: number_of_tags, activation: 'softmax'}));
 	} 
 
@@ -97,6 +118,7 @@ async function main(){
 	  epochs: epochs,
 	  batchSize: batch_size,
 	  validationData: [X_test, y_test],
+		// classWeight: class_weight,
 	  callbacks: {
 	    onEpochEnd: (epoch, log) => console.log(`Epoch ${epoch}: loss = ${log.loss}`)
 	  }

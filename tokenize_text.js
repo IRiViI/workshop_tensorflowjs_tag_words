@@ -37,6 +37,7 @@ function getSampleData(data, subfolder_names){
 
 function cleanText(text){
   text = text.toLowerCase();
+  text = text.replace(/\s\s+/g, ' ');
 
   // Replace special symbols by separable symbols
   text = text.replace(/(\r\n|\n|\r)/gm, " ");
@@ -68,7 +69,8 @@ function cleanText(text){
 
 function tokenize(text, dictonary){
 	tokenized_words = [];
-	for (let word of text){
+	const words = text.split(" ");
+	for (let word of words){
 		token = dictonary[word];
 		if (!token){
 			// Missing word
@@ -167,10 +169,11 @@ for (let label_index in unique_labels){
 	let label = unique_labels[label_index];
   inverse_labels_dict[label_index] = label;
 }
-var json_inverse_labels_dict = JSON.stringify(inverse_labels_dict);
+var json_inverse_labels_dict = JSON.stringify(inverse_labels_dict, null, 4);
 fs.writeFile(labels_dictionary_path + "/inverse_labels_dictionary.json", json_inverse_labels_dict, 'utf8', function (err) {
   if (err) {
       console.log("An error occured while writing JSON Object to File.");
       return console.log(err);
   }
 });
+
