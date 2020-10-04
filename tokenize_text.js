@@ -1,9 +1,9 @@
 const fs = require('fs');
+const path = require('path');
 
 const dictionary_filepath = "./dictionaries/dictionary.json";
 const save_directory = "./tokenized";
-const file_directory = "datasets/reuters";
-const cats_filepath = "./datasets/reuters/cats.txt";
+const file_directory = "datasets/imdb";
 const labels_dictionary_path = "./dictionaries";
 
 
@@ -41,7 +41,7 @@ function cleanText(text){
 
   // Replace special symbols by separable symbols
   text = text.replace(/(\r\n|\n|\r)/gm, " ");
-  text = text.replace(/\'/g, '');
+  // text = text.replace(/\'/g, '');
   text = text.replace(/\./g, " . ");
   text = text.replace(/,/g, " , ");
   text = text.replace(/\?/g, " ? ");
@@ -62,7 +62,7 @@ function cleanText(text){
   text = text.replace(/\-/g, ' - ');
   text = text.replace(/\>/g, ' ');
   text = text.replace(/"/g, '');
-  text = text.replace(/‘/g, '');
+  // text = text.replace(/‘/g, '');
 
   return text;
 }
@@ -82,18 +82,33 @@ function tokenize(text, dictonary){
 }
 
 // 0) Get the file names and labels
-var data = fs.readFileSync(cats_filepath, 'utf8');
-var out = getSampleData(data);
-var subfolders = out[0];
-var filename_list = out[1];
-var labels = out[2];
-// console.log(subfolder);
+const load_folder = "./datasets/imdb";
+const subfolder_names = ["test","train"];
+const label_names = ["neg","pos"];
+
+filename_list = [];
+subfolders = [];
+labels = [];
+
+subfolder_names.forEach(function(subfolder_name) {
+	label_names.forEach(function(label_name){
+	  let files = fs.readdirSync(path.join(__dirname, load_folder, subfolder_name, label_name));
+	  files.forEach(function (file) {
+	      // Do whatever you want to do with the file
+	      filename_list.push(path.join(label_name, file));
+	      subfolders.push(subfolder_name);
+	      labels.push(label_name);
+	  });
+	})
+});
+
+// console.log(subfolders);
 // console.log(filename_list);
 // console.log(labels);
 
 // 1) Load dictionary
-	let dictionary_raw = fs.readFileSync(dictionary_filepath);
-	dictionary = JSON.parse(dictionary_raw);
+let dictionary_raw = fs.readFileSync(dictionary_filepath);
+dictionary = JSON.parse(dictionary_raw);
 
 // 2) Tokenize text
 tokens_list = [];
@@ -108,21 +123,16 @@ for (let index = 0; index < subfolders.length; index++){
 	tokens = tokenize(text, dictionary);
 	tokens_list.push(tokens);
 }
-// console.log(tokens_list[0])
 
 // 3) Index labels
 let unique_labels = labels.filter((item, i, ar) => ar.indexOf(item) === i);
 label_indices = labels.map(label => unique_labels.indexOf(label));
-// console.log(unique_labels);
-console.log(label_indices);
 
-// 4) Sort data based on the subfolder
+// 4) Restructure the data in the form we want for training
 sorted_tokens = {};
 sorted_indices = {};
 for (let index = 0; index < subfolders.length; index++){
 	let subfolder = subfolders[index];
-	// let filename = filename_list[index];
-	// let label = labels[index];
 	let indices = label_indices[index];
 	let tokens = tokens_list[index];
 	// Create subfolder if it does not exist

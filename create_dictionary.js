@@ -1,4 +1,7 @@
 const fs = require('fs');
+const path = require('path');
+
+// https://ai.stanford.edu/~amaas/data/sentiment/
 
 function cleanText(text){
   text = text.toLowerCase();
@@ -6,7 +9,7 @@ function cleanText(text){
 
   // Replace special symbols by separable symbols
   text = text.replace(/(\r\n|\n|\r)/gm, " ");
-  text = text.replace(/\'/g, '');
+  // text = text.replace(/\'/g, '');
   text = text.replace(/\./g, " . ");
   text = text.replace(/,/g, " , ");
   text = text.replace(/\?/g, " ? ");
@@ -27,7 +30,7 @@ function cleanText(text){
   text = text.replace(/\-/g, ' - ');
   text = text.replace(/\>/g, ' ');
   text = text.replace(/"/g, '');
-  text = text.replace(/‘/g, '');
+  // text = text.replace(/‘/g, '');
 
   return text;
 }
@@ -36,7 +39,6 @@ function countWords(text, word_counts){
 
   // 2) Clean text
   text = cleanText(text);
-  // console.log(text);
 
   // Split the text and remove spaces
   // 0)
@@ -79,43 +81,24 @@ function createFilepathList(data, subfolder_names){
 	return filepath_list;
 }
 
-// 0) Read file
-// const filename = "1";
-// load_folder = "./datasets/reuters/training";
-// fs.readFile(load_folder + "/" + filename, 'utf8', function(err, data) {
-//   if (err) throw err;
-// 	console.log(data);
-// })
-
-// 1) Count words for one file
-// const filename = "1";
-// load_folder = "./datasets/reuters/training";
-// fs.readFile(load_folder + "/" + filename, 'utf8', function(err, data) {
-//   if (err) throw err;
-//   let word_counts = {};
-// 	console.log(countWords(data, word_counts));
-// })
-
-// Count words for all the words according to cats file
-const load_folder = "./datasets/reuters";
-const subfolder_names = ["training"];
-const cats_filepath = "./datasets/reuters/cats.txt";
-const minimal_occurance = 3;
+// Count words for all the words
+const load_folder = "./datasets/imdb/train";
+const subfolder_names = ["neg","pos"];
+const minimal_occurance = 100;
 const save_folder = "./dictionaries";
 
-// const load_folder = "./datasets/imdb/test";
-// const subfolder_names = ["neg"];
-// const cats_filepath = "./datasets/imdb/cats.txt";
-// const minimal_occurance = 1;
-// const save_folder = "./dictionaries";
+// 0) Get a list with all the files
+filename_list = [];
+subfolder_names.forEach(function(subfolder_name) {
+  let files = fs.readdirSync(path.join(__dirname, load_folder, subfolder_name));
+  files.forEach(function (file) {
+      // Do whatever you want to do with the file
+      filename_list.push(path.join(subfolder_name, file))
+  });
+});
+// console.log(filename_list);
 
-// 2) Get a list with all the files
-var data = fs.readFileSync(cats_filepath, 'utf8');
-var filename_list = createFilepathList(data, subfolder_names);
-console.log(data)
-console.log(filename_list)
-
-// 3) Count every word of every sample
+// 1) Count every word of every sample
 var word_counts = {};
 // console.log(filename_list)
 for (let filename of filename_list){
@@ -124,7 +107,7 @@ for (let filename of filename_list){
 }
 // console.log(word_counts);
 
-// 5) Shrink wordsCounter
+// 2) Only keep words which occure enough times
 var words_counter_list = [];
 for (let wordkey in word_counts) {
 	let value = word_counts[wordkey];
@@ -134,7 +117,7 @@ for (let wordkey in word_counts) {
 }
 // console.log(words_counter_list);
 
-// 6) Sort the list
+// 3) Sort the list
 words_counter_list.sort(function(a, b) {
     return b[1] - a[1];
 });
@@ -142,7 +125,7 @@ words_counter_list.sort(function(a, b) {
 
 // Optional) Use the "stopwords" to reduce the list
 
-// 7) Make Dictonaries
+// 4) Make Dictonaries
 dictonary = {}
 inverse_dictonary= {}
 for (let i = 0; i < words_counter_list.length; i++){
@@ -155,7 +138,7 @@ for (let i = 0; i < words_counter_list.length; i++){
 // console.log(dictonary);
 // console.log(inverse_dictonary);
 
-// 8 Save Everything)
+// 5) Save Everything
 var json_dictonary = JSON.stringify(dictonary, null, 4);
 fs.writeFile(save_folder + "/" + "dictionary.json", json_dictonary, 'utf8', function (err) {
   if (err) {

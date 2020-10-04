@@ -1,0 +1,21 @@
+<head>
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@2.0.0/dist/tf.min.js"></script>
+
+  <script src="http://localhost:3000/index.js"></script>
+
+  <link rel="stylesheet" href="style.css">
+
+  <link rel="stylesheet" href="http://localhost:3000/fontawesome-free-5.15.0-web/css/all.css" rel="stylesheet">
+</head>
+
+<body onload="load()">
+  <div class="main">
+    <textarea id="input-value" type="text"placeholder="Give me a sentence and I will show you wether I like it or not =)"></textarea>
+    <br/>
+    <br/>
+    <button id="submit-button" onclick="predict_input()">Predict</button>
+    <br/>
+    <br/>
+    <i id="emote" class="fa fa-smile"></i>
+  </div>
+</body>

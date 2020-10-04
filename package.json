@@ -24,6 +24,7 @@
   "homepage": "https://github.com/IRiViI/workshop_tensorflowjs_tag_words#readme",
   "dependencies": {
     "@tensorflow/tfjs": "^1.6.0",
-    "@tensorflow/tfjs-node-gpu": "^1.6.0"
+    "@tensorflow/tfjs-node-gpu": "^1.6.0",
+    "express": "^4.17.1"
   }
 }

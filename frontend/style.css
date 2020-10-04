@@ -1,0 +1,23 @@
+.main{
+	width:400px;
+	margin-left: calc(50% - 200px);
+	margin-top: 100px;
+	text-align: center;
+}
+
+.fa{
+	font-size: 50px;
+}
+
+#emote{
+	margin-top: 20px;
+}
+
+#input-value{
+	height:150px;
+	width:400px;
+}
+
+#submit-button{
+	width:400px;
+}
