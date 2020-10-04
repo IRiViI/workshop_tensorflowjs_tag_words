@@ -1,24 +1,54 @@
-# Foobar
+# Predict tags for text in Java Script
 
-Foobar is a Python library for dealing with word pluralization.
+This github shows an example how you can train a NLP Deep Learning model using TensorFlow JS in NodeJS and deploy it on both the backend as frontend.
 
 ## Installation
 
-Use the package manager [pip](https://pip.pypa.io/en/stable/) to install foobar.
+You need NodeJS to run the code.
+Install all the packages.
 
 ```bash
-pip install foobar
+npm install
 ```
 
 ## Usage
 
-```python
-import foobar
+First download your train and test data.
+Give it a propper folder structure:
+./datasets/yourdataset/train/label0
+./datasets/yourdataset/train/label1
+./datasets/yourdataset/train/label2
+./datasets/yourdataset/test/label0
+./datasets/yourdataset/test/label1
+./datasets/yourdataset/test/label2
 
-foobar.pluralize('word') # returns 'words'
-foobar.pluralize('goose') # returns 'geese'
-foobar.singularize('phenomena') # returns 'phenomenon'
+You have to adjust the hard code folder paths. I know that this is sloppy but I can't be bothered to make it proper right now.
+
+Create a dictionary from your datasets
+```bash
+node create_dictionary.js
 ```
+
+Tokenize your datasets
+```bash
+node tokenize_text.js
+```
+
+Train your model
+```bash
+node train_model.js
+```
+
+Use your model in the backend
+```bash
+node use_model.js
+```
+
+Use your model in the frontend
+```bash
+node server.js
+```
+And go to localhost:3000/index.html
 
 ## Contributing
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
