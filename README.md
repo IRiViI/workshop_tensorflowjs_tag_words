@@ -15,12 +15,12 @@ npm install
 
 First download your train and test data.
 Give it a propper folder structure:
-./datasets/yourdataset/train/label0
-./datasets/yourdataset/train/label1
-./datasets/yourdataset/train/label2
-./datasets/yourdataset/test/label0
-./datasets/yourdataset/test/label1
-./datasets/yourdataset/test/label2
+- ./datasets/yourdataset/train/label0
+- ./datasets/yourdataset/train/label1
+- ./datasets/yourdataset/train/label2
+- ./datasets/yourdataset/test/label0
+- ./datasets/yourdataset/test/label1
+- ./datasets/yourdataset/test/label2
 
 You have to adjust the hard code folder paths. I know that this is sloppy but I can't be bothered to make it proper right now.
 
